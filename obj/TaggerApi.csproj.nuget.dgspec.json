@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\rjsaa\\documents\\net\\taggerapi\\TaggerApi.csproj": {}
+    "C:\\Users\\rjsaa\\Documents\\net\\TaggerApi\\TaggerApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\rjsaa\\documents\\net\\taggerapi\\TaggerApi.csproj": {
+    "C:\\Users\\rjsaa\\Documents\\net\\TaggerApi\\TaggerApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\rjsaa\\documents\\net\\taggerapi\\TaggerApi.csproj",
+        "projectUniqueName": "C:\\Users\\rjsaa\\Documents\\net\\TaggerApi\\TaggerApi.csproj",
         "projectName": "TaggerApi",
-        "projectPath": "C:\\Users\\rjsaa\\documents\\net\\taggerapi\\TaggerApi.csproj",
+        "projectPath": "C:\\Users\\rjsaa\\Documents\\net\\TaggerApi\\TaggerApi.csproj",
         "packagesPath": "C:\\Users\\rjsaa\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\rjsaa\\documents\\net\\taggerapi\\obj\\",
+        "outputPath": "C:\\Users\\rjsaa\\Documents\\net\\TaggerApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\rjsaa\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -43,9 +43,45 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
             "Microsoft.EntityFrameworkCore.InMemory": {
               "target": "Package",
               "version": "[8.0.8, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[8.0.5, )"
+            },
+            "Npgsql": {
+              "target": "Package",
+              "version": "[8.0.4, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL.Design": {
+              "target": "Package",
+              "version": "[1.1.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

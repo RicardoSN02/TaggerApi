@@ -1,8 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using TaggerApi.Models;
+using Microsoft.Extensions.DependencyInjection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+string? cadena = builder.Configuration.GetConnectionString("DefaultConnection") ?? "otracadena";
 builder.Services.AddControllers();
+
+builder.Services.AddDbContext<PostgresContext>(options =>
+    options.UseNpgsql(cadena));
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
