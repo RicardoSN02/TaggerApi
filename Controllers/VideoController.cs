@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaggerApi.Models;
+using TaggerApi.DTOs;
+using System.Text.Json;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 namespace TaggerApi.Controllers
 {
@@ -22,14 +25,16 @@ namespace TaggerApi.Controllers
 
         // GET: api/Video
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Video>>> GetVideos()
+        public async Task<ActionResult<IEnumerable<VideoDTO>>> GetVideos()
         {
-            return await _context.Videos.ToListAsync();
+            return await _context.Videos
+                    .Select(x => VideoToDTO(x))
+                    .ToListAsync();
         }
 
         // GET: api/Video/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Video>> GetVideo(long id)
+        public async Task<ActionResult<VideoDTO>> GetVideo(long id)
         {
             var video = await _context.Videos.FindAsync(id);
 
@@ -38,35 +43,39 @@ namespace TaggerApi.Controllers
                 return NotFound();
             }
 
-            return video;
+            return VideoToDTO(video);
         }
 
         // PUT: api/Video/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutVideo(long id, Video video)
+        public async Task<IActionResult> PutVideo(long id, VideoDTO videoDTO)
         {
-            if (id != video.Id)
+            if (id != videoDTO.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(video).State = EntityState.Modified;
+            var video = await _context.Videos.FindAsync(id);
+
+            if(video == null){
+                return NotFound();
+            }
+
+            video.Name = videoDTO.Name;
+            video.Link = videoDTO.Link;
+            video.Description = videoDTO.Description;
+            video.Permissions = videoDTO.Permissions;
+            video.IdUser = videoDTO.IdUser;
 
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
+            when (!VideoExists(id))
             {
-                if (!VideoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
             return NoContent();
@@ -75,12 +84,21 @@ namespace TaggerApi.Controllers
         // POST: api/Video
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Video>> PostVideo(Video video)
+        public async Task<ActionResult<VideoDTO>> PostVideo(VideoDTO videoDTO)
         {
+            var video = new Video{
+                Id = videoDTO.Id,
+                Name = videoDTO.Name,
+                Link = videoDTO.Link,
+                Description = videoDTO.Description,
+                Permissions = videoDTO.Permissions,
+                IdUser = videoDTO.IdUser
+            };
+            
             _context.Videos.Add(video);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetVideo", new { id = video.Id }, video);
+            return CreatedAtAction(nameof(GetVideo), new { id = video.Id }, video);
         }
 
         // DELETE: api/Video/5
@@ -103,5 +121,16 @@ namespace TaggerApi.Controllers
         {
             return _context.Videos.Any(e => e.Id == id);
         }
+
+        private static VideoDTO VideoToDTO(Video video) =>
+           new VideoDTO
+        {
+           Id = video.Id,
+           Name = video.Name,
+           Link = video.Link,
+           Description = video.Description,
+           Permissions = video.Permissions,
+           IdUser = video.IdUser
+        };
     }
 }
