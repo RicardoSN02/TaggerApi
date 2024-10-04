@@ -18,9 +18,7 @@ public partial class Video
 
     public string Permissions { get; set; } = null!;
 
-    public long IdUser { get; set; }
-
-    public virtual User IdUserNavigation { get; set; } = null!;
+    public string IdUser { get; set; }
 
     public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
 }

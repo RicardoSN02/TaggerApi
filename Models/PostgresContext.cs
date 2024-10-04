@@ -16,8 +16,6 @@ public partial class PostgresContext : DbContext
     }
     public virtual DbSet<Tag> Tags { get; set; }
 
-    public virtual DbSet<User> Users { get; set; }
-
     public virtual DbSet<Video> Videos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -51,25 +49,9 @@ public partial class PostgresContext : DbContext
             entity.Property(e => e.Medialink).HasColumnName("medialink");
             entity.Property(e => e.Timestamp).HasColumnName("timestamp");
 
-            entity.HasOne(d => d.IdUserNavigation).WithMany(p => p.Tags)
-                .HasForeignKey(d => d.IdUser)
-                .HasConstraintName("Tags_id_user_fkey");
-
             entity.HasOne(d => d.IdVideoNavigation).WithMany(p => p.Tags)
                 .HasForeignKey(d => d.IdVideo)
                 .HasConstraintName("Tags_id_video_fkey");
-        });
-
-
-        modelBuilder.Entity<User>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("Users_pkey");
-
-            entity.ToTable("Users", tb => tb.HasComment("Contain info about users"));
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Email).HasColumnName("email");
-            entity.Property(e => e.Username).HasColumnName("username");
         });
 
         modelBuilder.Entity<Video>(entity =>
@@ -86,10 +68,6 @@ public partial class PostgresContext : DbContext
             entity.Property(e => e.Link).HasColumnName("link");
             entity.Property(e => e.Name).HasColumnName("name");
             entity.Property(e => e.Permissions).HasColumnType("json");
-
-            entity.HasOne(d => d.IdUserNavigation).WithMany(p => p.Videos)
-                .HasForeignKey(d => d.IdUser)
-                .HasConstraintName("Videos_id_user_fkey");
         });
         modelBuilder.HasSequence<int>("seq_schema_version", "graphql").IsCyclic();
 

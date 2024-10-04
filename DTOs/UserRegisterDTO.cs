@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace TaggerApi.DTOs;
@@ -6,12 +6,9 @@ namespace TaggerApi.DTOs;
 /// <summary>
 /// Contain info about users
 /// </summary>
-public partial class UserDTO
+public partial class UserRegisterDTO
 {
-    public long Id { get; set; }
-
-    public string Username { get; set; } = null!;
-
     public string Email { get; set; } = null!;
+    public string Password { get; set; } = null!;
 
 }

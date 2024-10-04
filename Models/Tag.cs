@@ -16,11 +16,9 @@ public partial class Tag
 
     public string? Medialink { get; set; }
 
-    public long IdUser { get; set; }
+    public string IdUser { get; set; }
 
     public long IdVideo { get; set; }
-
-    public virtual User IdUserNavigation { get; set; } = null!;
 
     public virtual Video IdVideoNavigation { get; set; } = null!;
 }

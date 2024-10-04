@@ -18,6 +18,6 @@ public partial class VideoDTO
 
     public string Permissions { get; set; } = null!;
 
-    public long IdUser { get; set; }
+    public string IdUser { get; set; }
 
 }
