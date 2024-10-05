@@ -58,5 +58,12 @@ namespace TaggerApi.Controllers
            return await _auth.RegisterAsync(userDTO);;
         }
 
+        [HttpPost("login")]
+        public async Task<ActionResult<string>> LoginUser(LoginDTO loginDTO)
+
+        {
+           return await _auth.LoginAsync(loginDTO);
+        }
+
     }
 }

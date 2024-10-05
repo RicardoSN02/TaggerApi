@@ -9,6 +9,7 @@ using TaggerApi.Models;
 using TaggerApi.DTOs;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TaggerApi.Controllers
 {
@@ -81,6 +82,7 @@ namespace TaggerApi.Controllers
             return NoContent();
         }
 
+    
         // POST: api/Video
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]

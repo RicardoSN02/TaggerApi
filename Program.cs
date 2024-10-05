@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using TaggerApi.Services.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,7 +25,19 @@ FirebaseApp.Create(new AppOptions()
     Credential = GoogleCredential.FromFile("firebase.json")
 });
 
-builder.Services.AddSingleton<IAuthenticationService,AuthenticationService>();
+//builder.Services.AddSingleton<IAuthenticationService,AuthenticationService>();
+
+builder.Services.AddHttpClient<IAuthenticationService, AuthenticationService>((sp,httpClient) =>{
+    var configuration = sp.GetRequiredService<IConfiguration>();
+    httpClient.BaseAddress = new Uri(configuration["Authentication:TokenUri"]!);
+});
+
+builder.Services.AddAuthentication()
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, jwtOptions =>{
+                     jwtOptions.Authority = builder.Configuration["Authentication:ValidIssuer"];
+                     jwtOptions.Audience = builder.Configuration["Authentication:Audience"];
+                     jwtOptions.TokenValidationParameters.ValidIssuer=builder.Configuration["Authentication:ValidIssuer"];
+                });
 
 var app = builder.Build();
 
@@ -37,8 +50,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
+
 
 app.Run();
