@@ -5,6 +5,7 @@ using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using TaggerApi.Services.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using TaggerApi.Services.DB_Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 string? cadena = builder.Configuration.GetConnectionString("DefaultConnection") ?? "otracadena";
 builder.Services.AddControllers();
+
+builder.Services.AddTransient<IVideoService,VideoService>();   
 
 builder.Services.AddDbContext<PostgresContext>(options =>
     options.UseNpgsql(cadena));
