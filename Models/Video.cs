@@ -16,9 +16,8 @@ public partial class Video
 
     public string? Description { get; set; }
 
-    public string Permissions { get; set; } = null!;
-
     public string IdUser { get; set; }
 
     public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
+    public virtual ICollection<Permission> Permissions { get; set; } = new List<Permission>();
 }

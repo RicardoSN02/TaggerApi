@@ -15,8 +15,8 @@ public partial class PostgresContext : DbContext
     {
     }
     public virtual DbSet<Tag> Tags { get; set; }
-
     public virtual DbSet<Video> Videos { get; set; }
+    public virtual DbSet<Permission> Permissions{ get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -54,6 +54,19 @@ public partial class PostgresContext : DbContext
                 .HasConstraintName("Tags_id_video_fkey");
         });
 
+        modelBuilder.Entity<Permission>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("Permissions_pkey");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.IdVideo).HasColumnName("id_video");
+            entity.Property(e => e.Permissions).HasColumnName("permissions");
+
+            entity.HasOne(d => d.IdVideoNavigation).WithMany(p => p.Permissions)
+                .HasForeignKey(d => d.IdVideo)
+                .HasConstraintName("Permissions_id_video_fkey");
+        });
+
         modelBuilder.Entity<Video>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Videos_pkey");
@@ -67,7 +80,6 @@ public partial class PostgresContext : DbContext
             entity.Property(e => e.IdUser).HasColumnName("id_user");
             entity.Property(e => e.Link).HasColumnName("link");
             entity.Property(e => e.Name).HasColumnName("name");
-            entity.Property(e => e.Permissions).HasColumnType("json");
         });
         modelBuilder.HasSequence<int>("seq_schema_version", "graphql").IsCyclic();
 

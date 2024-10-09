@@ -66,7 +66,6 @@ namespace TaggerApi.Controllers
             video.Name = videoDTO.Name;
             video.Link = videoDTO.Link;
             video.Description = videoDTO.Description;
-            video.Permissions = videoDTO.Permissions;
             video.IdUser = videoDTO.IdUser;
 
             try
@@ -93,7 +92,6 @@ namespace TaggerApi.Controllers
                 Name = videoDTO.Name,
                 Link = videoDTO.Link,
                 Description = videoDTO.Description,
-                Permissions = videoDTO.Permissions,
                 IdUser = videoDTO.IdUser
             };
             
@@ -131,7 +129,6 @@ namespace TaggerApi.Controllers
            Name = video.Name,
            Link = video.Link,
            Description = video.Description,
-           Permissions = video.Permissions,
            IdUser = video.IdUser
         };
     }
