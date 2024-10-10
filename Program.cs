@@ -14,7 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 string? cadena = builder.Configuration.GetConnectionString("DefaultConnection") ?? "otracadena";
 builder.Services.AddControllers();
 
-builder.Services.AddTransient<IVideoService,VideoService>();   
+builder.Services.AddTransient<IVideoService,VideoService>(); 
+builder.Services.AddTransient<ITagService,TagService>();  
 
 builder.Services.AddDbContext<PostgresContext>(options =>
     options.UseNpgsql(cadena));

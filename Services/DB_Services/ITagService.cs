@@ -4,9 +4,9 @@ using TaggerApi.DTOs;
 using TaggerApi.Models;
 public interface ITagService{
 
-    Task<TagDTO> AddTag(VideoDTO videoDTO);
+    Task<TagDTO> AddTag(TagDTO tagDTO);
 
-    Task<TagDTO> UpdateTag(long id,VideoDTO videoDTO);
+    Task<TagDTO> UpdateTag(long id,TagDTO tagDTO);
 
     Task<IEnumerable<TagDTO>> RetrieveTags();
 

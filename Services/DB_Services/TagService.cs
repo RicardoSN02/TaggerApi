@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using TaggerApi.DTOs;
 using TaggerApi.Models;
+using TaggerApi.Services.ErrorServices;
 
 namespace TaggerApi.Services.DB_Services;
 
@@ -14,28 +16,96 @@ public class TagService : ITagService
         _context = context;
     }
 
-    public Task<TagDTO> AddTag(VideoDTO videoDTO)
+    public async Task<TagDTO> AddTag(TagDTO tagDTO)
     {
-        throw new NotImplementedException();
+        var  tag = new Tag{
+            Id = tagDTO.Id,
+            Content = tagDTO.Content,
+            Timestamp = tagDTO.Timestamp,
+            Medialink = tagDTO.Medialink,
+            IdUser = tagDTO.IdUser,
+            IdVideo = tagDTO.IdVideo
+        };
+
+        _context.Tags.Add(tag);
+        await _context.SaveChangesAsync();
+
+        return TagToDTO(tag);
     }
 
-    public Task<bool> DelTag(long id)
+    public async Task<bool> DelTag(long id)
     {
-        throw new NotImplementedException();
+        var tag = await _context.Tags.FindAsync(id);
+        if (tag == null)
+        {
+            return false;
+        }
+
+        _context.Tags.Remove(tag);
+        await _context.SaveChangesAsync();
+
+        return true;        
     }
 
-    public Task<TagDTO> RetrieveTag(long id)
+    public async Task<TagDTO> RetrieveTag(long id)
     {
-        throw new NotImplementedException();
+        var tag = await _context.Tags.FindAsync(id);
+
+        if (tag == null)
+        {
+            throw new NotFoundException("Video not found.");
+        }
+
+        return TagToDTO(tag);
     }
 
-    public Task<IEnumerable<TagDTO>> RetrieveTags()
+    public async Task<IEnumerable<TagDTO>> RetrieveTags()
     {
-        throw new NotImplementedException();
+        return await _context.Tags
+            .Select(x => TagToDTO(x))
+            .ToListAsync();
     }
 
-    public Task<TagDTO> UpdateTag(long id, VideoDTO videoDTO)
+    public async Task<TagDTO> UpdateTag(long id, TagDTO tagDTO)
     {
-        throw new NotImplementedException();
+        var tag = await _context.Tags.FindAsync(id);
+
+        if(tag == null){
+            throw new NotFoundException("Video not found.");
+        }
+
+        tag.Content = tagDTO.Content;
+        tag.Timestamp = tagDTO.Timestamp;
+        tag.Medialink = tagDTO.Medialink;
+        tag.IdUser = tagDTO.IdUser;
+        tag.IdVideo = tagDTO.IdVideo;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        when (!TagExists(id))
+        {
+            throw new NotFoundException("Video not found.");
+        }
+
+        return TagToDTO(tag);
     }
+
+    private bool TagExists(long id)
+    {
+        return _context.Tags.Any(e => e.Id == id);
+    }    
+
+    private static TagDTO TagToDTO(Tag tag) => 
+        new TagDTO
+    {
+        Id = tag.Id,
+        Content = tag.Content,
+        Timestamp = tag.Timestamp,
+        Medialink = tag.Medialink,
+        IdUser = tag.IdUser,
+        IdVideo = tag.IdVideo
+    };
 }

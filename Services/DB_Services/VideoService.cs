@@ -2,6 +2,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using TaggerApi.DTOs;
 using TaggerApi.Models;
+using TaggerApi.Services.ErrorServices;
 
 namespace TaggerApi.Services.DB_Services;
 
