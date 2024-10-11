@@ -6,6 +6,7 @@ using Google.Apis.Auth.OAuth2;
 using TaggerApi.Services.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using TaggerApi.Services.DB_Services;
+using TaggerApi.Pagination;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddTransient<IVideoService,VideoService>(); 
 builder.Services.AddTransient<ITagService,TagService>();  
+
+builder.Services.AddScoped<IPagedList,PagedList>();  
 
 builder.Services.AddDbContext<PostgresContext>(options =>
     options.UseNpgsql(cadena));

@@ -16,6 +16,5 @@ public partial class VideoDTO
 
     public string? Description { get; set; }
 
-    public string IdUser { get; set; }
 
 }
