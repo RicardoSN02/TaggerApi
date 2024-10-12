@@ -7,6 +7,7 @@ using TaggerApi.Services.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using TaggerApi.Services.DB_Services;
 using TaggerApi.Pagination;
+using TaggerApi.Services.Interfaces;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +17,9 @@ string? cadena = builder.Configuration.GetConnectionString("DefaultConnection") 
 builder.Services.AddControllers();
 
 builder.Services.AddTransient<IVideoService,VideoService>(); 
-builder.Services.AddTransient<ITagService,TagService>();  
+builder.Services.AddTransient<ITagService,TagService>();
+builder.Services.AddTransient<IPermissionService,PermissionService>();  
+  
 
 builder.Services.AddScoped<IPagedList,PagedList>();  
 

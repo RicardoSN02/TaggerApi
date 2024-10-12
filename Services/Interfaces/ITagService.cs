@@ -1,4 +1,4 @@
-namespace TaggerApi.Services.DB_Services;
+namespace TaggerApi.Services.Interfaces;
 
 using TaggerApi.DTOs;
 using TaggerApi.Models;

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using TaggerApi.Models;
 using TaggerApi.DTOs;
 using TaggerApi.Services.DB_Services;
+using TaggerApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using TaggerApi.Pagination;
 

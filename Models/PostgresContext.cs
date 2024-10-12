@@ -56,11 +56,12 @@ public partial class PostgresContext : DbContext
 
         modelBuilder.Entity<Permission>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("Permissions_pkey");
+            entity.HasKey(e => e.Token).HasName("Permissions_pkey");
 
-            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Token).HasColumnName("token");
             entity.Property(e => e.IdVideo).HasColumnName("id_video");
-            entity.Property(e => e.Permissions).HasColumnName("permissions");
+            entity.Property(e => e.Role).HasColumnName("role");
+            entity.Property(e => e.Expire).HasColumnName("expire");
 
             entity.HasOne(d => d.IdVideoNavigation).WithMany(p => p.Permissions)
                 .HasForeignKey(d => d.IdVideo)

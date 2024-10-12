@@ -8,11 +8,13 @@ namespace TaggerApi.Models;
 /// </summary>
 public partial class Permission
 {
-    public long Id { get; set; }
+    public string Token { get; set; }
 
     public long IdVideo { get; set; }
 
     public virtual Video IdVideoNavigation { get; set; } = null!;
 
-    public string Permissions { get; set; } = null!;
+    public string Role { get; set; } = null!;
+
+    public string Expire {get;set;}  
 }

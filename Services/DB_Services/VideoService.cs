@@ -5,6 +5,7 @@ using TaggerApi.Models;
 using TaggerApi.Pagination;
 using TaggerApi.Extensions;
 using TaggerApi.Services.ErrorServices;
+using TaggerApi.Services.Interfaces;
 
 namespace TaggerApi.Services.DB_Services;
 
@@ -137,5 +138,10 @@ public class VideoService : IVideoService
        }
 
        return listDto;
+    }
+
+    public Task<VideoDTO> GetSharedVideo(string token)
+    {
+        throw new NotImplementedException();
     }
 }

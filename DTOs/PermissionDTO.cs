@@ -3,13 +3,14 @@ using System.Collections.Generic;
 
 namespace TaggerApi.DTOs;
 
-/// <summary>
-/// Contain data about videos
-/// </summary>
-public partial class PermissionDTO
-{
-    public long Id { get; set; }
+public partial class PermissionDTO{
+
+    public string Token { get; set; }
 
     public long IdVideo { get; set; }
+
+    public string Role { get; set; } = null!;
+
+    public string Expire {get;set;}  
 
 }

@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using FirebaseAdmin.Auth;
 using TaggerApi.Pagination;
+using TaggerApi.Services.Interfaces;
 
 namespace TaggerApi.Controllers
 {

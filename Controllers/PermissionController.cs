@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaggerApi.Models;
-using TaggerApi.DTOs;
+using TaggerApi.Services.Interfaces;
 
 namespace TaggerApi.Controllers
 {
@@ -14,13 +14,14 @@ namespace TaggerApi.Controllers
     [ApiController]
     public class PermissionController : ControllerBase
     {
-        private readonly PostgresContext _context;
+        private readonly IPermissionService _perService;
 
-        public PermissionController(PostgresContext context)
+        public PermissionController(IPermissionService permissionService)
         {
-            _context = context;
+            _perService = permissionService;
         }
 
+        /*
         // GET: api/Permission
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Permission>>> GetPermissions()
@@ -30,7 +31,7 @@ namespace TaggerApi.Controllers
 
         // GET: api/Permission/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Permission>> GetPermission(long id)
+        public async Task<ActionResult<Permission>> GetPermission(string id)
         {
             var permission = await _context.Permissions.FindAsync(id);
 
@@ -45,9 +46,9 @@ namespace TaggerApi.Controllers
         // PUT: api/Permission/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPermission(long id, Permission permission)
+        public async Task<IActionResult> PutPermission(string id, Permission permission)
         {
-            if (id != permission.Id)
+            if (id != permission.Token)
             {
                 return BadRequest();
             }
@@ -79,14 +80,28 @@ namespace TaggerApi.Controllers
         public async Task<ActionResult<Permission>> PostPermission(Permission permission)
         {
             _context.Permissions.Add(permission);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (PermissionExists(permission.Token))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
-            return CreatedAtAction("GetPermission", new { id = permission.Id }, permission);
+            return CreatedAtAction("GetPermission", new { id = permission.Token }, permission);
         }
 
         // DELETE: api/Permission/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePermission(long id)
+        public async Task<IActionResult> DeletePermission(string id)
         {
             var permission = await _context.Permissions.FindAsync(id);
             if (permission == null)
@@ -100,9 +115,10 @@ namespace TaggerApi.Controllers
             return NoContent();
         }
 
-        private bool PermissionExists(long id)
+        private bool PermissionExists(string id)
         {
-            return _context.Permissions.Any(e => e.Id == id);
+            return _context.Permissions.Any(e => e.Token == id);
         }
+        */
     }
 }

@@ -1,4 +1,4 @@
-namespace TaggerApi.Services.DB_Services;
+namespace TaggerApi.Services.Interfaces;
 
 using TaggerApi.DTOs;
 using TaggerApi.Models;
@@ -20,5 +20,9 @@ public interface IVideoService{
     Task<bool> DelVideo(long id,string userUid);
 
     Task<IEnumerable<VideoDTO>> GetByUserPag(PaginationParams request,string userUid);
+
+    Task<VideoDTO> GetSharedVideo(string token);    
+
+
 
 }
