@@ -83,7 +83,7 @@ namespace TaggerApi.Controllers
 
         }
         
-        
+        /*
         //TODO: title search
         //remove endpoint 
         // GET: api/Video/5
@@ -109,6 +109,7 @@ namespace TaggerApi.Controllers
 
             }  
         }
+        */
 
         // PUT: api/Video/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -130,7 +131,7 @@ namespace TaggerApi.Controllers
           try{
             var video = await _videoService.UpdateVideo(id,videoDTO,userUid);
 
-            return video;
+            return Ok(video);
           }catch(Exception e){
             if(e.Message.Contains("not found")){
 
@@ -158,7 +159,7 @@ namespace TaggerApi.Controllers
 
           try{
             var video = await _videoService.AddVideo(videoDTO,userUid);
-            return CreatedAtAction(nameof(GetVideo), new { id = video.Id }, video);
+            return Ok(video);
           }catch(Exception e){
               return BadRequest(e.Message);
           }  

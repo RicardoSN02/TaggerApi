@@ -16,8 +16,6 @@ public partial class TagDTO
 
     public string? Medialink { get; set; }
 
-    public string IdUser { get; set; }
-
     public long IdVideo { get; set; }
 
 }
