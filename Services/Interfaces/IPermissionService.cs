@@ -10,8 +10,8 @@ public interface IPermissionService
 {  
   Task<string> CreatePermission(PermissionDTO perDTO,  string userUid);
 
-  Task<PermissionDTO> GetPermissions(int idvideo);
+  Task<string> GetPermission(int idvideo, string userUid);
 
-  Task<PermissionDTO> DelPermissions(string token);
+  Task<bool> DelPermissions(int idvideo,string userUid);
 
 }

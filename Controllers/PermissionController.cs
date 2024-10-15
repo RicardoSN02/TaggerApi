@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaggerApi.Models;
 using TaggerApi.Services.Interfaces;
+using TaggerApi.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using TaggerApi.Services.ErrorServices;
 
 namespace TaggerApi.Controllers
 {
@@ -21,104 +24,89 @@ namespace TaggerApi.Controllers
             _perService = permissionService;
         }
 
-        /*
+        
         // GET: api/Permission
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Permission>>> GetPermissions()
+        [Authorize]
+        [HttpGet("{idvideo}")]
+        public async Task<ActionResult<string>> GetPermissions(int idvideo)
         {
-            return await _context.Permissions.ToListAsync();
+            var userUid = User.FindFirst("user_id")?.Value;
+            
+            if(userUid == null){
+              return NotFound("User not found");
+            }
+
+            try{
+               
+               var token = await _perService.GetPermission(idvideo,userUid);
+               var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.PathBase}";
+            
+               return Ok(baseUrl+"/api/Video/"+token);
+
+            }catch(NotFoundException e){
+                return NotFound(e.Message);
+            }catch(Exception e){
+                return BadRequest(e.Message);
+            }
+            
+      
+
+            
         }
 
-        // GET: api/Permission/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Permission>> GetPermission(string id)
-        {
-            var permission = await _context.Permissions.FindAsync(id);
-
-            if (permission == null)
-            {
-                return NotFound();
-            }
-
-            return permission;
-        }
-
-        // PUT: api/Permission/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPermission(string id, Permission permission)
-        {
-            if (id != permission.Token)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(permission).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PermissionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
+        
         // POST: api/Permission
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
-        public async Task<ActionResult<Permission>> PostPermission(Permission permission)
+        public async Task<ActionResult<string>> PostPermission(PermissionDTO permissiondto)
         {
-            _context.Permissions.Add(permission);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (PermissionExists(permission.Token))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+            var userUid = User.FindFirst("user_id")?.Value;
+            
+            if(userUid == null){
+              return NotFound("User not found");
             }
 
-            return CreatedAtAction("GetPermission", new { id = permission.Token }, permission);
+            try{
+               var result = await _perService.CreatePermission(permissiondto,userUid);
+               var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.PathBase}";
+            
+               return Ok(baseUrl+"/api/Video/"+result);
+            }catch(NotFoundException e){
+
+                return NotFound(e.Message);
+
+            }catch(Exception e){
+                return BadRequest(e.Message);
+            }
         }
+        
 
         // DELETE: api/Permission/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePermission(string id)
+        [Authorize]
+        [HttpDelete("{idvideo}")]
+        public async Task<IActionResult> DeletePermission(int idvideo)
         {
-            var permission = await _context.Permissions.FindAsync(id);
-            if (permission == null)
-            {
-                return NotFound();
+            var userUid = User.FindFirst("user_id")?.Value;
+
+            if(userUid == null){
+               return NotFound("User not found");
             }
 
-            _context.Permissions.Remove(permission);
-            await _context.SaveChangesAsync();
+            try{
+                bool result = await _perService.DelPermissions(idvideo,userUid);
+                
+                if (result == false)
+                {
+                  return NotFound("Not found");
+                }
 
-            return NoContent();
-        }
+                return NoContent();
 
-        private bool PermissionExists(string id)
-        {
-            return _context.Permissions.Any(e => e.Token == id);
+            }catch(Exception e){
+                return BadRequest(e.Message);
+            }
         }
-        */
+    
     }
 }

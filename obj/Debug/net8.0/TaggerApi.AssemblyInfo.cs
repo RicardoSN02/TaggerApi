@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TaggerApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+38b573f68f5852453c69f319c9eda1f92de4f8d8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f2e2be23490062173b8de04ddb221fc49af74d70")]
 [assembly: System.Reflection.AssemblyProductAttribute("TaggerApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TaggerApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

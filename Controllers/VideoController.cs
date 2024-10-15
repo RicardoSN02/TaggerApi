@@ -83,6 +83,17 @@ namespace TaggerApi.Controllers
             }
 
         }
+
+        [HttpGet("{token}")]
+        public async Task<ActionResult<IEnumerable<VideoDTO>>> GetVideosUser(string token)
+        {         
+            try{
+              return Ok(await _videoService.GetSharedVideo(token));
+            }catch(Exception e){
+              return BadRequest(e.Message);
+            }
+
+        }        
         
         /*
         //TODO: title search

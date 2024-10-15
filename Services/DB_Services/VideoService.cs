@@ -140,8 +140,22 @@ public class VideoService : IVideoService
        return listDto;
     }
 
-    public Task<VideoDTO> GetSharedVideo(string token)
+    public async Task<VideoDTO> GetSharedVideo(string token)
     {
-        throw new NotImplementedException();
+        var permission = await _context.Permissions
+                                .Where(b => b.Token.ToString() == token)
+                                .FirstOrDefaultAsync();
+
+        if(permission == null){
+            throw new NotFoundException("video no encontrado");
+        }                        
+
+        var video = await _context.Videos.FindAsync(permission.IdVideo);
+
+        if(video == null){
+            throw new NotFoundException("video no encontrado");
+        }
+
+        return VideoToDTO(video);
     }
 }

@@ -11,6 +11,6 @@ public partial class PermissionDTO{
 
     public string Role { get; set; } = null!;
 
-    public string Expire {get;set;}  
+    public DateTime Expire {get;set;}  
 
 }

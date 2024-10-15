@@ -44,7 +44,7 @@ public class TagService : ITagService
         
         if (tag == null)
         {
-            return false;
+            throw new NotFoundException("Tag not found");
         }
 
         var video = await _context.Videos.FindAsync(tag.IdVideo);

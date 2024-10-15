@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using TaggerApi.Services.DB_Services;
 using TaggerApi.Pagination;
 using TaggerApi.Services.Interfaces;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,9 +20,11 @@ builder.Services.AddControllers();
 builder.Services.AddTransient<IVideoService,VideoService>(); 
 builder.Services.AddTransient<ITagService,TagService>();
 builder.Services.AddTransient<IPermissionService,PermissionService>();  
-  
 
 builder.Services.AddScoped<IPagedList,PagedList>();  
+
+builder.Services.AddHttpContextAccessor();
+
 
 builder.Services.AddDbContext<PostgresContext>(options =>
     options.UseNpgsql(cadena));
@@ -50,6 +53,9 @@ builder.Services.AddAuthentication()
                 });
 
 var app = builder.Build();
+
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
