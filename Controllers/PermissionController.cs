@@ -33,23 +33,13 @@ namespace TaggerApi.Controllers
             var userUid = User.FindFirst("user_id")?.Value;
             
             if(userUid == null){
-              return NotFound("User not found");
+              throw new NotFoundException("User not found");
             }
 
-            try{
-               
-               var token = await _perService.GetPermission(idvideo,userUid);
-               var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.PathBase}";
-            
-               return Ok(baseUrl+"/api/Video/"+token);
-
-            }catch(NotFoundException e){
-                return NotFound(e.Message);
-            }catch(Exception e){
-                return BadRequest(e.Message);
-            }
-            
-      
+            var token = await _perService.GetPermission(idvideo,userUid);
+            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.PathBase}";
+        
+            return Ok(baseUrl+"/api/Video/"+token);
 
             
         }
@@ -64,21 +54,14 @@ namespace TaggerApi.Controllers
             var userUid = User.FindFirst("user_id")?.Value;
             
             if(userUid == null){
-              return NotFound("User not found");
+               throw new NotFoundException("User not found");
             }
 
-            try{
-               var result = await _perService.CreatePermission(permissiondto,userUid);
-               var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.PathBase}";
+            var result = await _perService.CreatePermission(permissiondto,userUid);
+            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.PathBase}";
             
-               return Ok(baseUrl+"/api/Video/"+result);
-            }catch(NotFoundException e){
+            return Ok(baseUrl+"/api/Video/"+result);
 
-                return NotFound(e.Message);
-
-            }catch(Exception e){
-                return BadRequest(e.Message);
-            }
         }
         
 
@@ -90,22 +73,13 @@ namespace TaggerApi.Controllers
             var userUid = User.FindFirst("user_id")?.Value;
 
             if(userUid == null){
-               return NotFound("User not found");
+                throw new NotFoundException("User not found");
             }
 
-            try{
-                bool result = await _perService.DelPermissions(idvideo,userUid);
-                
-                if (result == false)
-                {
-                  return NotFound("Not found");
-                }
+            bool result = await _perService.DelPermissions(idvideo,userUid);
 
-                return NoContent();
-
-            }catch(Exception e){
-                return BadRequest(e.Message);
-            }
+            return Ok("Permission deleted");
+  
         }
     
     }

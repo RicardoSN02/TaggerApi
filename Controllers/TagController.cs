@@ -11,6 +11,7 @@ using TaggerApi.Services.DB_Services;
 using TaggerApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using TaggerApi.Pagination;
+using TaggerApi.Services.ErrorServices;
 
 namespace TaggerApi.Controllers
 {
@@ -24,39 +25,7 @@ namespace TaggerApi.Controllers
         {
             _tagService = tagService;
         }
-       
-        /*
-        // GET: api/Tag
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<TagDTO>>> GetTags()
-        {
-            try{
-              return Ok(await _tagService.RetrieveTags());
-            }catch(Exception e){
-                return BadRequest(e.Message);
-            }
-        }
-        */
 
-        /*
-        // GET: api/Tag/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<TagDTO>> GetTag(long id)
-        {
-            try{
-
-                var tag = await _tagService.RetrieveTag(id);
-                return tag;
-
-            }catch(Exception e){
-                if(e.Message.Contains("not found")){
-                    return NotFound();
-                }else{
-                    return BadRequest(e.Message);
-                }
-            }
-        }
-        */
 
         [Authorize]
         [Route("videos")]
@@ -65,12 +34,7 @@ namespace TaggerApi.Controllers
           [FromQuery] PaginationParams paginationQuery, [FromQuery]int idvideo
         )
         {        
-            try{
-              return Ok(await _tagService.GetTagsPag(paginationQuery, idvideo));
-            }catch(Exception e){
-              return BadRequest(e.Message);
-            }
-
+            return Ok(await _tagService.GetTagsPag(paginationQuery, idvideo));
         }        
 
 
@@ -86,17 +50,11 @@ namespace TaggerApi.Controllers
                return NotFound("User not found");
             }
 
-            try{
-                var tag = await _tagService.UpdateTag(id,tagDTO,userUid);
-                return Ok(tag);
+            var tag = await _tagService.UpdateTag(id,tagDTO,userUid);
+            
+            return Ok(tag);
 
-            }catch(Exception e){
-                if(e.Message.Contains("not found")){
-                    return NotFound();
-                }else{
-                    return BadRequest(e.Message);
-                }
-            }
+
         }
 
         // POST: api/Tag
@@ -105,20 +63,16 @@ namespace TaggerApi.Controllers
         [HttpPost]
         public async Task<ActionResult<TagDTO>> PostTag(TagDTO tagDTO)
         {
-
             var userUid = User.FindFirst("user_id")?.Value;
 
             if(userUid == null){
-              return NotFound("User not found");
+              throw new NotFoundException("User not found");
             }
 
-            try{
-                var tag = await _tagService.AddTag(tagDTO,userUid);
-                return  Ok(tag);
+            var tag = await _tagService.AddTag(tagDTO,userUid);
 
-            }catch(Exception e){
-                return BadRequest(e.Message);
-            }
+            return  Ok(tag);
+
         }
 
         // DELETE: api/Tag/5
@@ -132,17 +86,10 @@ namespace TaggerApi.Controllers
               return NotFound("User not found");
             }
 
-            try{
-                bool result = await _tagService.DelTag(id,userUid);
-                
-                if(result == false){
-                    return NotFound();
-                }
+            bool result = await _tagService.DelTag(id,userUid);
 
-                return NoContent();
-            }catch(Exception e){
-                return BadRequest(e.Message);
-            }
+            return Ok("Tag deleted properly");
+
         }
         
     }

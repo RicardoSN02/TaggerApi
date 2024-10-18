@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using FirebaseAdmin.Auth;
 using TaggerApi.Pagination;
 using TaggerApi.Services.Interfaces;
+using TaggerApi.Services.ErrorServices;
 
 namespace TaggerApi.Controllers
 {
@@ -28,41 +29,6 @@ namespace TaggerApi.Controllers
             _videoService = videoService;
         }
 
-        /*
-        // GET: api/Video
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<VideoDTO>>> GetVideos()
-        {
-            try{
-              return Ok(await _videoService.RetrieveVideos());
-            }catch(Exception e){
-              return BadRequest(e.Message);
-            }
-
-        }
-        */
-
-        /*
-        [Authorize]
-        [Route("owner")]
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<VideoDTO>>> GetVideosUser()
-        {          
-            var userUid = User.FindFirst("user_id")?.Value;
-            
-            if(userUid == null){
-              return NotFound("User not found");
-            }
-
-            try{
-              return Ok(await _videoService.GetByUser(userUid));
-            }catch(Exception e){
-              return BadRequest(e.Message);
-            }
-
-        }
-       */
-
         [Authorize]
         [Route("owner")]
         [HttpGet]
@@ -73,87 +39,34 @@ namespace TaggerApi.Controllers
             var userUid = User.FindFirst("user_id")?.Value;
             
             if(userUid == null){
-              return NotFound("User not found");
+              throw new NotFoundException("User not found.");
             }
 
-            try{
-              return Ok(await _videoService.GetByUserPag(paginationQuery, userUid));
-            }catch(Exception e){
-              return BadRequest(e.Message);
-            }
-
+            return Ok(await _videoService.GetByUserPag(paginationQuery, userUid));
         }
 
         [HttpGet("{token}")]
         public async Task<ActionResult<IEnumerable<VideoDTO>>> GetVideosUser(string token)
         {         
-            try{
-              return Ok(await _videoService.GetSharedVideo(token));
-            }catch(Exception e){
-              return BadRequest(e.Message);
-            }
-
+            return Ok(await _videoService.GetSharedVideo(token));
         }        
-        
-        /*
-        //TODO: title search
-        //remove endpoint 
-        // GET: api/Video/5
-        [Authorize]
-        [HttpGet("{id}")]
-        public async Task<ActionResult<VideoDTO>> GetVideo(long id)
-        {
-            try{
-
-               var video = await _videoService.RetrieveVideo(id);
-
-               return video;
-
-            }catch(Exception e){
-                if(e.Message.Contains("not found")){
-
-                  return NotFound();
-
-                }else{
-                  return BadRequest(e.Message);
-
-                }
-
-            }  
-        }
-        */
 
         // PUT: api/Video/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
         [HttpPut("{id}")]
         public async Task<ActionResult<VideoDTO>> PutVideo(long id, VideoDTO videoDTO)
-        {
+        { 
           var userUid = User.FindFirst("user_id")?.Value;
 
           if(userUid == null){
-            return NotFound("User not found");
+            throw new NotFoundException("User not found.");
           }
 
-          if (id != videoDTO.Id)
-          {
-            return BadRequest();
-          }
+          var video = await _videoService.UpdateVideo(id,videoDTO,userUid);
 
-          try{
-            var video = await _videoService.UpdateVideo(id,videoDTO,userUid);
+          return Ok(video);
 
-            return Ok(video);
-          }catch(Exception e){
-            if(e.Message.Contains("not found")){
-
-              return NotFound();
-
-            }else{
-              return BadRequest(e.Message);
-
-            }                
-          }
         }
 
     
@@ -163,18 +76,17 @@ namespace TaggerApi.Controllers
         [HttpPost]
         public async Task<ActionResult<VideoDTO>> PostVideo(VideoDTO videoDTO)
         {
+   
           var userUid = User.FindFirst("user_id")?.Value;
 
           if(userUid == null){
-            return NotFound("User not found");
+            throw new NotFoundException("User Not Found.");
           }
 
-          try{
-            var video = await _videoService.AddVideo(videoDTO,userUid);
-            return Ok(video);
-          }catch(Exception e){
-              return BadRequest(e.Message);
-          }  
+          var video = await _videoService.AddVideo(videoDTO,userUid);
+          
+          return Ok(video);
+          
         }
 
         // DELETE: api/Video/5
@@ -182,25 +94,11 @@ namespace TaggerApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVideo(long id)
         {
-          var userUid = User.FindFirst("user_id")?.Value;
+          var userUid = (User.FindFirst("user_id")?.Value) ?? throw new NotFoundException("User not found");
+            
+          bool result = await _videoService.DelVideo(id,userUid);
 
-          if(userUid == null){
-            return NotFound("User not found");
-          }
-
-            try{
-                bool result = await _videoService.DelVideo(id,userUid);
-                if (result == false)
-                {
-                  return NotFound();
-                }
-
-                return NoContent();
-
-            }catch(Exception e){
-                return BadRequest(e.Message);
-            }
- 
+          return Ok("Video deleted");
         }
     }
 }

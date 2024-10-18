@@ -23,58 +23,56 @@ public class PermissionService : IPermissionService
 
     public async Task<string> CreatePermission(PermissionDTO perDTO, string userUid)
     {
-        var permissionFind = await _context.Permissions.Include(p => p.IdVideoNavigation)
-                                                   .Where(b => b.IdVideo == perDTO.IdVideo)
-                                                   .FirstOrDefaultAsync();        
+        var permissionFind = await _context.Permissions
+                    .Include(p => p.IdVideoNavigation)
+                    .Where(b => b.IdVideo == perDTO.IdVideo)
+                    .FirstOrDefaultAsync();        
 
         if(permissionFind != null){
-           throw new Exception("Link already exists");
+           throw new ConflictException("Link already exist");
         }   
 
         DateTime date = DateTime.UtcNow;
         date = date.AddDays(15);
 
-        if(perDTO.Role == "viewer" || perDTO.Role == "editor" ){
-           var permission = new Permission{
-               IdVideo = perDTO.IdVideo,
-               Role = perDTO.Role,  
-               Expire = date
-           };
-
+    
+        var permission = new Permission{
+            IdVideo = perDTO.IdVideo,
+            Role = perDTO.Role,  
+            Expire = date
+        };
         
-
-           var video = await _context.Videos.FindAsync(perDTO.IdVideo);
-        
-           if(video == null){
-               throw new NotFoundException("Video not found.");
-           }
-
-           if(userUid != video.IdUser){
-               throw new UnauthorizedAccessException("Video not your property.");
-           }        
-
-           var result = await _context.Permissions.AddAsync(permission);
-           await _context.SaveChangesAsync();
-
-           return result.Entity.Token.ToString();
-        }else{
-            throw new Exception("Invalid role");
+        var video = await _context.Videos.FindAsync(perDTO.IdVideo);
+    
+        if(video == null){
+            throw new NotFoundException("Video not found.");
         }
+
+        if(userUid != video.IdUser){
+            throw new UnauthorizedAccessException("Video not your property.");
+        }        
+
+        var result = await _context.Permissions.AddAsync(permission);
+        await _context.SaveChangesAsync();
+
+        return result.Entity.Token.ToString();
+
     }
 
     public async Task<bool> DelPermissions(int idvideo,string userUid)
     {
 
-        var permission = await _context.Permissions.Include(p => p.IdVideoNavigation)
-                                                   .Where(b => b.IdVideo == idvideo)
-                                                   .FirstOrDefaultAsync();
+        var permission = await _context.Permissions
+                        .Include(p => p.IdVideoNavigation)
+                        .Where(b => b.IdVideo == idvideo)
+                        .FirstOrDefaultAsync();
 
         if(permission == null){
             throw new NotFoundException("Permission not found");
         }
 
         if(permission.IdVideoNavigation.IdUser != userUid){
-            throw new UnauthorizedAccessException("Video not your property");
+            throw new UnauthorizedAccessException("Video not user property");
         }
 
         _context.Permissions.Remove(permission);
@@ -86,9 +84,10 @@ public class PermissionService : IPermissionService
 
     public async Task<string> GetPermission(int idvideo, string userUid)
     {
-        var permission = await _context.Permissions.Include(p => p.IdVideoNavigation)
-                                                   .Where(b => b.IdVideo == idvideo)
-                                                   .FirstOrDefaultAsync();
+        var permission = await _context.Permissions
+                        .Include(p => p.IdVideoNavigation)
+                        .Where(b => b.IdVideo == idvideo)
+                        .FirstOrDefaultAsync();
          
         if(permission==null){
             throw new NotFoundException("Permission link not found");

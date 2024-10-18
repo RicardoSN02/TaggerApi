@@ -9,6 +9,7 @@ using TaggerApi.Services.DB_Services;
 using TaggerApi.Pagination;
 using TaggerApi.Services.Interfaces;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using TaggerApi.Services.ErrorServices;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +39,7 @@ FirebaseApp.Create(new AppOptions()
     Credential = GoogleCredential.FromFile("firebase.json")
 });
 
+
 //builder.Services.AddSingleton<IAuthenticationService,AuthenticationService>();
 
 builder.Services.AddHttpClient<IAuthenticationService, AuthenticationService>((sp,httpClient) =>{
@@ -58,10 +60,10 @@ var app = builder.Build();
 
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+if (app.Environment.IsDevelopment()){
+   app.UseExceptionHandler("/error-development");
+}else{
+   app.UseExceptionHandler("/error");
 }
 
 app.UseHttpsRedirection();

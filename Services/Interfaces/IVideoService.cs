@@ -11,12 +11,6 @@ public interface IVideoService{
 
     Task<VideoDTO> UpdateVideo(long id,VideoDTO videoDTO,string userUid);
 
-    Task<IEnumerable<VideoDTO>> RetrieveVideos();
-
-    Task<VideoDTO> RetrieveVideo(long id);
-
-    Task<IEnumerable<VideoDTO>> GetByUser(string userUid);
-
     Task<bool> DelVideo(long id,string userUid);
 
     Task<IEnumerable<VideoDTO>> GetByUserPag(PaginationParams request,string userUid);

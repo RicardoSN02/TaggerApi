@@ -43,11 +43,11 @@ public class VideoService : IVideoService
         
         if (video == null)
         {
-            return false;
+            throw new NotFoundException("Video not found.");
         }
 
         if(userUid != video.IdUser){
-            throw new UnauthorizedAccessException("Video not your property.");
+            throw new UnauthorizedAccessException("Video not user property");
         }
 
         _context.Videos.Remove(video);
@@ -56,6 +56,7 @@ public class VideoService : IVideoService
         return true;
     }
 
+    /*
     public async Task<VideoDTO> RetrieveVideo(long id)
     {
         var video = await _context.Videos.FindAsync(id);
@@ -67,14 +68,18 @@ public class VideoService : IVideoService
 
         return VideoToDTO(video);
     }
+    */
 
+    /*
     public async Task<IEnumerable<VideoDTO>> RetrieveVideos()
     {
         return await _context.Videos
                 .Select(x => VideoToDTO(x))
                 .ToListAsync();
     }
+    */
 
+    /*
     public async Task<IEnumerable<VideoDTO>> GetByUser(string userUid)
     {
         return await _context.Videos
@@ -82,6 +87,7 @@ public class VideoService : IVideoService
                 .Select(x => VideoToDTO(x))
                 .ToListAsync();
     }    
+    */
 
     public async Task<VideoDTO> UpdateVideo(long id,VideoDTO videoDTO,string userUid)
     {
@@ -92,11 +98,10 @@ public class VideoService : IVideoService
         }
 
         if(userUid != video.IdUser){
-            throw new UnauthorizedAccessException("Video not your property.");
+            throw new UnauthorizedAccessException("Video not user property.");
         }
 
         video.Name = videoDTO.Name;
-        video.Link = videoDTO.Link;
         video.Description = videoDTO.Description;
 
         await _context.SaveChangesAsync();
@@ -147,13 +152,13 @@ public class VideoService : IVideoService
                                 .FirstOrDefaultAsync();
 
         if(permission == null){
-            throw new NotFoundException("video no encontrado");
+            throw new NotFoundException("permission not found.");
         }                        
 
         var video = await _context.Videos.FindAsync(permission.IdVideo);
 
         if(video == null){
-            throw new NotFoundException("video no encontrado");
+            throw new NotFoundException("Video not found.");
         }
 
         return VideoToDTO(video);

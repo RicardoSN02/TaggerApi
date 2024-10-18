@@ -10,10 +10,6 @@ public interface ITagService{
 
     Task<TagDTO> UpdateTag(long id,TagDTO tagDTO,string userUid);
 
-    Task<IEnumerable<TagDTO>> RetrieveTags();
-
-    Task<TagDTO> RetrieveTag(long id);
-
     Task<bool> DelTag(long id,string userUid);
 
     Task<IEnumerable<TagDTO>> GetTagsPag(PaginationParams request,int idvideo);

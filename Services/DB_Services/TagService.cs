@@ -27,7 +27,7 @@ public class TagService : ITagService
             Id = tagDTO.Id,
             Content = tagDTO.Content,
             Timestamp = tagDTO.Timestamp,
-            Medialink = tagDTO.Medialink,
+            Medialink = "",
             IdUser = userUid,
             IdVideo = tagDTO.IdVideo
         };
@@ -48,11 +48,6 @@ public class TagService : ITagService
         }
 
         var video = await _context.Videos.FindAsync(tag.IdVideo);
-
-        if (video == null)
-        {
-            throw new NotFoundException("Video not found");
-        }
          
         if(userUid != tag.IdUser && userUid != video.IdUser){
             throw new UnauthorizedAccessException("Tag not your property.");
@@ -62,28 +57,6 @@ public class TagService : ITagService
         await _context.SaveChangesAsync();
 
         return true;        
-    }
-
-    //TODO: No use
-    public async Task<TagDTO> RetrieveTag(long id)
-    {
-        var tag = await _context.Tags.FindAsync(id);
-
-        if (tag == null)
-        {
-            throw new NotFoundException("Video not found.");
-        }
-
-        return TagToDTO(tag);
-    }
-    
-
-    //TODO: No use
-    public async Task<IEnumerable<TagDTO>> RetrieveTags()
-    {
-        return await _context.Tags
-            .Select(x => TagToDTO(x))
-            .ToListAsync();
     }
 
 
@@ -96,12 +69,10 @@ public class TagService : ITagService
         }
 
         if(userUid != tag.IdUser){
-            throw new UnauthorizedAccessException("Tag not your property.");
+            throw new UnauthorizedAccessException("Tag not user property.");
         }        
 
         tag.Content = tagDTO.Content;
-        tag.Timestamp = tagDTO.Timestamp;
-        tag.Medialink = tagDTO.Medialink;
         
         await _context.SaveChangesAsync();
 
