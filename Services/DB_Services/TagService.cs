@@ -60,7 +60,7 @@ public class TagService : ITagService
     }
 
 
-    public async Task<TagDTO> UpdateTag(long id, TagDTO tagDTO,string userUid)
+    public async Task<TagDTO> UpdateTag(long id, UpdateTagDTO tagDTO,string userUid)
     {
         var tag = await _context.Tags.FindAsync(id);
 
@@ -90,7 +90,6 @@ public class TagService : ITagService
         Id = tag.Id,
         Content = tag.Content,
         Timestamp = tag.Timestamp,
-        Medialink = tag.Medialink,
         IdVideo = tag.IdVideo
     };
 
@@ -109,7 +108,6 @@ public class TagService : ITagService
        
        foreach (var item in resultPagination.Result){
             listDto.Add(TagToDTO(item));
-            Console.WriteLine(item);
        }              
 
        return listDto;

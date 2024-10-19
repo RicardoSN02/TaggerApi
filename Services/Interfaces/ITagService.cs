@@ -8,7 +8,7 @@ public interface ITagService{
 
     Task<TagDTO> AddTag(TagDTO tagDTO, string userUid);
 
-    Task<TagDTO> UpdateTag(long id,TagDTO tagDTO,string userUid);
+    Task<TagDTO> UpdateTag(long id,UpdateTagDTO tagDTO,string userUid);
 
     Task<bool> DelTag(long id,string userUid);
 

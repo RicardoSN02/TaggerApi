@@ -102,6 +102,7 @@ public class VideoService : IVideoService
         }
 
         video.Name = videoDTO.Name;
+        video.Link = videoDTO.Link;
         video.Description = videoDTO.Description;
 
         await _context.SaveChangesAsync();

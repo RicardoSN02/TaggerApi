@@ -42,7 +42,7 @@ namespace TaggerApi.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<ActionResult<TagDTO>> PutTag(long id, TagDTO tagDTO)
+        public async Task<ActionResult<TagDTO>> PutTag(long id, UpdateTagDTO tagDTO)
         {
             var userUid = User.FindFirst("user_id")?.Value;
 
